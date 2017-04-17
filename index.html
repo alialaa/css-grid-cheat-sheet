@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html ng-app="cssGridCC">
+<head>
+	<title>CSS Grid Cheat Sheet</title>
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<link href="assets/css/styles.css" rel="stylesheet" type="text/css">
+</head>
+<body class="loading">
+
+<div class="loading_overlay">
+	<div class="progress">
+    	<div class="indeterminate"></div>
+    </div>
+</div>
+
+<div ng-controller="CSSGridController as CSSGrid">
+	<header>
+		<div id="sidebar">
+			<h1>CSS Grid Cheat Sheet <span>Your ultimate CSS grid visual guide</span></h1>
+			
+			<div class="prop">
+				<div class="switch">
+					<label>
+						Guids
+						<input type="checkbox" ng-model="CSSGrid.guids">
+						<span class="lever"></span>
+					</label>
+
+					<input type="checkbox" id="expermental_guids" ng-model="CSSGrid.expermental_guids" />
+					<label for="expermental_guids">Experimental <i class="tooltipped tiny material-icons" data-position="right" data-delay="50" data-tooltip="Looks visually better however it does not currently work on all situations. Turn off if the lines look off.">info_outline</i></label>
+				</div>
+			</div>
+
+			
+			<div class="column_rows prop">
+				<label>grid-template-columns <i class="tooltipped tiny material-icons" data-position="right" data-delay="50" data-tooltip="Defines the columns of the grid with a space-separated list of values. The values represent the track size, and the space between them represents the grid line.">info_outline</i></label>
+				<div class="row labels">
+			        <div class="input-field col s4">
+			        	<label>Value</label>
+			        </div>
+			        <div class="input-field col s4">
+					    <label>Unit</label>
+				    </div>
+				    <div class="input-field col s4">
+			        	<label>Repeat</label>
+			        </div>
+		        </div>
+				<ul dnd-list="CSSGrid.grid_template_columns_arr">
+				    <li ng-repeat="column in CSSGrid.grid_template_columns_arr"
+				        dnd-draggable="column"
+				        dnd-moved="CSSGrid.grid_template_columns_arr.splice($index, 1); CSSGrid.creatColumnsString(); CSSGrid.creatRowsString()"
+				        dnd-effect-allowed="move"
+				        >
+				        <dnd-nodrag>
+          				<div dnd-handle class="handle"> <i class="tiny material-icons">drag_handle</i></div>
+          				<div class="remove" ng-if="CSSGrid.grid_template_columns_arr.length > 1" ng-click="CSSGrid.removeColumn($index)"><i class="tiny material-icons">remove_circle</i></div>
+				        <div class="row">
+					        <div class="input-field col s4">
+					        	<input type="number" min="0" ng-model="column.value" ng-change="CSSGrid.creatColumnsString();">
+					        </div>
+					        <div class="input-field col s4">
+							    <select ng-model="column.unit" ng-change="CSSGrid.creatColumnsString();">
+							      <option value="px" selected>px</option>
+							      <option value="fr">fr</option>
+							      <option value="%">%</option>
+							    </select>
+						    </div>
+						    <div class="input-field col s4">
+					        	<input type="number" min="1" ng-model="column.repeat" ng-change="CSSGrid.creatColumnsString();">
+					        </div>
+				        </div>
+				        </dnd-nodrag>
+				    </li>
+				</ul>
+				<div class="output">{{CSSGrid.grid_template_columns}} <br> <a  ng-click="CSSGrid.addColumn()" class="waves-effect waves-light btn"><i class="material-icons left">add</i>Add Column</a></div>
+			</div>
+
+			<div class="column_rows prop">
+				<label>grid-template-rows <i class="tooltipped tiny material-icons" data-position="right" data-delay="50" data-tooltip="Defines the rows of the grid with a space-separated list of values. The values represent the track size, and the space between them represents the grid line.">info_outline</i></label>
+				<div class="row labels">
+			        <div class="input-field col s4">
+			        	<label>Value</label>
+			        </div>
+			        <div class="input-field col s4">
+					    <label>Unit</label>
+				    </div>
+				    <div class="input-field col s4">
+			        	<label>Repeat</label>
+			        </div>
+		        </div>
+				<ul dnd-list="CSSGrid.grid_template_rows_arr">
+				    <li ng-repeat="row in CSSGrid.grid_template_rows_arr"
+				        dnd-draggable="row"
+				        dnd-moved="CSSGrid.grid_template_rows_arr.splice($index, 1); CSSGrid.creatColumnsString(); CSSGrid.creatRowsString()"
+				        dnd-effect-allowed="move"
+				        >
+				        <dnd-nodrag>
+          				<div dnd-handle class="handle"> <i class="tiny material-icons">drag_handle</i></div>
+          				<div class="remove" ng-if="CSSGrid.grid_template_rows_arr.length > 1" ng-click="CSSGrid.removeRow($index)"><i class="tiny material-icons">remove_circle</i></div>
+				        <div class="row">
+					        <div class="input-field col s4">
+					        	<input type="number" min="0" ng-model="row.value" ng-change="CSSGrid.creatRowsString();">
+					        </div>
+					        <div class="input-field col s4">
+							    <select ng-model="row.unit" ng-change="CSSGrid.creatRowsString();">
+							      <option value="px" selected>px</option>
+							      <option value="fr">fr</option>
+							      <option value="%">%</option>
+							    </select>
+						    </div>
+						    <div class="input-field col s4">
+					        	<input type="number" min="1" ng-model="row.repeat" ng-change="CSSGrid.creatRowsString();">
+					        </div>
+				        </div>
+				        </dnd-nodrag>
+				    </li>
+				</ul>
+				<div class="output">{{CSSGrid.grid_template_rows}} <br> <a  ng-click="CSSGrid.addRow()" class="waves-effect waves-light btn"><i class="material-icons left">add</i>Add Row</a></div>
+			</div>
+
+			<div class="prop">
+				<div class="input-field">
+					<label>Container Height  <i class="tooltipped tiny material-icons" data-position="right" data-delay="50" data-tooltip="Leave empty for 'auto'.">info_outline</i></label>
+				    <input type="number" min="0" ng-change="CSSGrid.updateGhosts();" ng-model="CSSGrid.container_height">
+			    </div>
+		    </div>
+
+		    <div class="prop">
+				<div class="input-field">
+					<label>grid-column-gap  <i class="tooltipped tiny material-icons" data-position="right" data-delay="50" data-tooltip="Specifies the size of the grid lines. You can think of it like setting the width of the gutters between the columns.">info_outline</i></label>
+				    <input type="number" min="0" ng-model="CSSGrid.grid_column_gap">
+			    </div>
+		    </div>
+
+		    <div class="prop">
+				<div class="input-field">
+					<label>grid-row-gap  <i class="tooltipped tiny material-icons" data-position="right" data-delay="50" data-tooltip="Specifies the size of the grid lines. You can think of it like setting the width of the gutters between the rows.">info_outline</i></label>
+				    <input type="number" min="0" ng-model="CSSGrid.grid_row_gap">
+			    </div>
+		    </div>
+
+			<div class="prop">
+				<div class="input-field">
+					<label>justify-items  <i class="tooltipped tiny material-icons" data-position="right" data-delay="50" data-tooltip="Aligns the content inside a grid item along the row axis.">info_outline</i></label>
+				    <select ng-model="CSSGrid.justify_items">
+				      <option value="start" selected>start</option>
+				      <option value="end">end</option>
+				      <option value="center">center</option>
+				      <option value="stretch">stretch</option>
+				    </select>
+			    </div>
+		    </div>
+
+		    <div class="prop">
+				<div class="input-field">
+					<label>align-items  <i class="tooltipped tiny material-icons" data-position="right" data-delay="50" data-tooltip="Aligns the content inside a grid item along the column axis.">info_outline</i></label>
+				    <select ng-model="CSSGrid.align_items">
+				      <option value="start" selected>start</option>
+				      <option value="end">end</option>
+				      <option value="center">center</option>
+				      <option value="stretch">stretch</option>
+				    </select>
+			    </div>
+		    </div>
+
+		    <div class="prop">
+				<div class="input-field">
+					<label>justify-content  <i class="tooltipped tiny material-icons" data-position="right" data-delay="50" data-tooltip="Sometimes the total size of your grid might be less than the size of its grid container. This could happen if all of your grid items are sized with non-flexible units like px. In this case you can set the alignment of the grid within the grid container. This property aligns the grid along the row axis.">info_outline</i></label>
+				    <select ng-model="CSSGrid.justify_content">
+				      <option value="start" selected>start</option>
+				      <option value="end">end</option>
+				      <option value="center">center</option>
+				      <option value="stretch">stretch</option>
+				      <option value="space-around">space-around</option>
+				      <option value="space-between">space-between</option>
+				      <option value="space-evenly">space-evenly</option>
+				    </select>
+			    </div>
+		    </div>
+
+		    <div class="prop">
+				<div class="input-field">
+					<label>align-content  <i class="tooltipped tiny material-icons" data-position="right" data-delay="50" data-tooltip="Sometimes the total size of your grid might be less than the size of its grid container. This could happen if all of your grid items are sized with non-flexible units like px. In this case you can set the alignment of the grid within the grid container. This property aligns the grid along the column axis.">info_outline</i></label>
+				    <select ng-model="CSSGrid.align_content">
+				      <option value="start" selected>start</option>
+				      <option value="end">end</option>
+				      <option value="center">center</option>
+				      <option value="stretch">stretch</option>
+				      <option value="space-around">space-around</option>
+				      <option value="space-between">space-between</option>
+				      <option value="space-evenly">space-evenly</option>
+				    </select>
+			    </div>
+		    </div>
+
+		    <div class="prop">
+				<label>grid-auto-columns <i class="tooltipped tiny material-icons" data-position="right" data-delay="50" data-tooltip="Specifies the size of any auto-generated grid tracks (aka implicit grid tracks). Implicit grid tracks get created when you explicitly position rows or columns (via grid-template-rows/grid-template-columns) that are out of range of the defined grid.">info_outline</i></label>
+				<div class="row">
+			        <div class="input-field col s6">
+			        	<input type="number" min="0" ng-model="CSSGrid.grid_auto_columns.value">
+			        </div>
+			        <div class="input-field col s6">
+					    <select ng-model="CSSGrid.grid_auto_columns.unit">
+					      <option value="px" selected>px</option>
+					      <option value="fr">fr</option>
+					      <option value="%">%</option>
+					    </select>
+				    </div>
+		        </div>
+	        </div>
+
+	        <div class="prop">
+				<label>grid-auto-rows <i class="tooltipped tiny material-icons" data-position="right" data-delay="50" data-tooltip="Specifies the size of any auto-generated grid tracks (aka implicit grid tracks). Implicit grid tracks get created when you explicitly position rows or columns (via grid-template-rows/grid-template-columns) that are out of range of the defined grid.">info_outline</i></label>
+				<div class="row">
+			        <div class="input-field col s6">
+			        	<input type="number" min="0" ng-model="CSSGrid.grid_auto_rows.value">
+			        </div>
+			        <div class="input-field col s6">
+					    <select ng-model="CSSGrid.grid_auto_rows.unit">
+					      <option value="px" selected>px</option>
+					      <option value="fr">fr</option>
+					      <option value="%">%</option>
+					    </select>
+				    </div>
+		        </div>
+	        </div>
+
+	        <div class="prop">
+				<div class="input-field">
+					<label>grid-auto-flow  <i class="tooltipped tiny material-icons" data-position="right" data-delay="50" data-tooltip="If you have grid items that you don't explicitly place on the grid, the auto-placement algorithm kicks in to automatically place the items. This property controls how the auto-placement algorithm works.">info_outline</i></label>
+				    <select ng-model="CSSGrid.grid_auto_flow">
+				      <option value="row" selected>row</option>
+				      <option value="column">column</option>
+				      <!-- <option value="dense">dense</option> -->
+				    </select>
+			    </div>
+		    </div>
+
+		    <div class="footer">
+		    	Created by <a target="_blank" href="https://twitter.com/alialaa">@alialaa</a>.
+		    	View on <a target="_blank" href="">Github</a> <br>
+		    	Properties info text from <a target="_blank" href="https://css-tricks.com/snippets/css/complete-guide-grid/">css-tricks.com</a>
+		    </div>
+		</div>
+
+		<div id="item_props" ng-class="{'active': CSSGrid.selected_item !== -1}" ng-style="{'background-color': '#'+CSSGrid.items[CSSGrid.selected_item].colour}">
+			<a class="close" ng-click="CSSGrid.selected_item = -1;"><i class="tiny material-icons">close</i></a>
+			<div class="prop">
+				<label>grid-column-start <i class="tooltipped tiny material-icons" data-position="right" data-delay="50" data-tooltip="Determines a grid item's location within the grid by referring to specific grid lines. grid-column-start is the line where the item begins.">info_outline</i></label>
+				<div class="row">
+					<div class="input-field col s6">
+						<select ng-model="CSSGrid.items[CSSGrid.selected_item]['grid-column-start']['type']">
+					    	<option value="auto" selected>Auto</option>
+					        <option value="line">Line Number</option>
+					        <option value="span">Span</option>
+					    </select>
+				    </div>
+			        <div class="input-field col s6">
+						<input type="number" min="1" ng-disabled="CSSGrid.items[CSSGrid.selected_item]['grid-column-start']['type'] == 'auto'" ng-model="CSSGrid.items[CSSGrid.selected_item]['grid-column-start']['value']">
+					</div>
+				</div>
+	        </div>
+
+	        <div class="prop">
+				<label>grid-column-end <i class="tooltipped tiny material-icons" data-position="right" data-delay="50" data-tooltip="Determines a grid item's location within the grid by referring to specific grid lines. grid-column-end is the line where the item ends.">info_outline</i></label>
+				<div class="row">
+					<div class="input-field col s6">
+						<select ng-model="CSSGrid.items[CSSGrid.selected_item]['grid-column-end']['type']">
+					    	<option value="auto" selected>Auto</option>
+					        <option value="line">Line Number</option>
+					        <option value="span">Span</option>
+					    </select>
+				    </div>
+			        <div class="input-field col s6">
+						<input type="number" min="1" ng-disabled="CSSGrid.items[CSSGrid.selected_item]['grid-column-end']['type'] == 'auto'" ng-model="CSSGrid.items[CSSGrid.selected_item]['grid-column-end']['value']">
+					</div>
+				</div>
+	        </div>
+
+	        <div class="prop">
+				<label>grid-row-start <i class="tooltipped tiny material-icons" data-position="right" data-delay="50" data-tooltip="Determines a grid item's location within the grid by referring to specific grid lines. grid-row-start is the line where the item begins.">info_outline</i></label>
+				<div class="row">
+					<div class="input-field col s6">
+						<select ng-model="CSSGrid.items[CSSGrid.selected_item]['grid-row-start']['type']">
+					    	<option value="auto" selected>Auto</option>
+					        <option value="line">Line Number</option>
+					        <option value="span">Span</option>
+					    </select>
+				    </div>
+			        <div class="input-field col s6">
+						<input type="number" min="1" ng-disabled="CSSGrid.items[CSSGrid.selected_item]['grid-row-start']['type'] == 'auto'" ng-model="CSSGrid.items[CSSGrid.selected_item]['grid-row-start']['value']">
+					</div>
+				</div>
+	        </div>
+
+	        <div class="prop">
+				<label>grid-row-end <i class="tooltipped tiny material-icons" data-position="right" data-delay="50" data-tooltip="Determines a grid item's location within the grid by referring to specific grid lines. grid-row-end is the line where the item ends.">info_outline</i></label>
+				<div class="row">
+					<div class="input-field col s6">
+						<select ng-model="CSSGrid.items[CSSGrid.selected_item]['grid-row-end']['type']">
+					    	<option value="auto" selected>Auto</option>
+					        <option value="line">Line Number</option>
+					        <option value="span">Span</option>
+					    </select>
+				    </div>
+			        <div class="input-field col s6">
+						<input type="number" min="1" ng-disabled="CSSGrid.items[CSSGrid.selected_item]['grid-row-end']['type'] == 'auto'" ng-model="CSSGrid.items[CSSGrid.selected_item]['grid-row-end']['value']">
+					</div>
+				</div>
+	        </div>
+
+	        <div class="prop">
+				<label>justify-self <i class="tooltipped tiny material-icons" data-position="right" data-delay="50" data-tooltip="Aligns the content inside a grid item along the row axis (as opposed to align-self which aligns along the column axis). This value applies to the content inside a single grid item.">info_outline</i></label>
+				<select ng-model="CSSGrid.items[CSSGrid.selected_item]['justify-self']">
+					<option value="auto">auto</option>
+					<option value="start">start</option>
+					<option value="end">end</option>
+					<option value="center">center</option>
+					<option value="stretch">stretch</option>
+			    </select>
+	        </div>
+
+			<div class="prop">
+				<label>align-self <i class="tooltipped tiny material-icons" data-position="right" data-delay="50" data-tooltip="Aligns the content inside a grid item along the column axis (as opposed to justify-self which aligns along the row axis). This value applies to the content inside a single grid item.">info_outline</i></label>
+				<select ng-model="CSSGrid.items[CSSGrid.selected_item]['align-self']">
+				<option value="auto">auto</option>
+				<option value="start">start</option>
+				<option value="end">end</option>
+				<option value="center">center</option>
+				<option value="stretch">stretch</option>
+		    </select>
+	        </div>
+
+		</div>
+
+    </header>
+    <main ng-class="{'hidden': !CSSGrid.container_height }">
+    	<div class="fixed-action-btn">
+        <a ng-click="CSSGrid.createNewItem()" class="btn-floating btn-large waves-effect waves-light red tooltipped" data-position="left" data-delay="50" data-tooltip="Add an Item"><i class="material-icons">add</i></a>
+        </div>
+
+        <div class="css_grid ghost" ng-if="CSSGrid.guids && CSSGrid.expermental_guids" ng-style="{'height': CSSGrid.container_height ? CSSGrid.container_height + 'px' : 'auto', 'grid-template-columns': CSSGrid.extra_left_cols_text + CSSGrid.grid_template_columns + CSSGrid.extra_right_cols_text, 'grid-template-rows': CSSGrid.extra_top_rows_text + CSSGrid.grid_template_rows, 'grid-row-gap': CSSGrid.grid_row_gap, 'grid-column-gap': CSSGrid.grid_column_gap, 'justify-content': CSSGrid.justify_content, 'align-content': CSSGrid.align_content, 'grid-auto-columns': CSSGrid.grid_auto_columns.value + CSSGrid.grid_auto_columns.unit, 'grid-auto-rows': CSSGrid.grid_auto_rows.value + CSSGrid.grid_auto_rows.unit}">
+			<div class="css_grid_item" ng-repeat="item in CSSGrid.ghosts track by $index">
+				<div class="css_grid_inner">{{$index+1}}</div>
+				<div class="left line" ></div><div class="right line" ></div>
+				<div class="top line" ></div><div class="bottom line" ></div>
+			</div>
+		</div>
+
+		<div class="css_grid ghost_alt" ng-if="CSSGrid.guids && !CSSGrid.expermental_guids" ng-style="{'height': CSSGrid.container_height ? CSSGrid.container_height + 'px' : 'auto', 'grid-template-columns':CSSGrid.grid_template_columns, 'grid-template-rows': CSSGrid.grid_template_rows, 'grid-row-gap': CSSGrid.grid_row_gap, 'grid-column-gap': CSSGrid.grid_column_gap, 'justify-content': CSSGrid.justify_content, 'align-content': CSSGrid.align_content, 'grid-auto-columns': CSSGrid.grid_auto_columns.value + CSSGrid.grid_auto_columns.unit, 'grid-auto-rows': CSSGrid.grid_auto_rows.value + CSSGrid.grid_auto_rows.unit, 'grid-auto-flow': CSSGrid.grid_auto_flow}">
+			<div class="css_grid_item" ng-repeat="item in CSSGrid.items" ng-style="{'grid-column-start': CSSGrid.getGridItemValue(item['grid-column-start']) ,'grid-column-end': CSSGrid.getGridItemValue(item['grid-column-end']),'grid-row-start': CSSGrid.getGridItemValue(item['grid-row-start']),'grid-row-end': CSSGrid.getGridItemValue(item['grid-row-end'])}">
+				<div class="css_grid_inner">{{$index+1}}</div>
+				<div class="left line" ></div><div class="right line" ></div>
+				<div class="top line" ></div><div class="bottom line" ></div>
+			</div>
+		</div>
+
+		<div class="css_grid" ng-class="{'item_selected': CSSGrid.selected_item !== -1}" ng-style="{'height': CSSGrid.container_height ? CSSGrid.container_height + 'px' : 'auto', 'grid-template-columns': CSSGrid.grid_template_columns, 'grid-template-rows': CSSGrid.grid_template_rows, 'grid-row-gap': CSSGrid.grid_row_gap, 'grid-column-gap': CSSGrid.grid_column_gap,'justify-items': CSSGrid.justify_items,'align-items': CSSGrid.align_items, 'justify-content': CSSGrid.justify_content, 'align-content': CSSGrid.align_content, 'grid-auto-columns': CSSGrid.grid_auto_columns.value + CSSGrid.grid_auto_columns.unit, 'grid-auto-rows': CSSGrid.grid_auto_rows.value + CSSGrid.grid_auto_rows.unit, 'grid-auto-flow': CSSGrid.grid_auto_flow}">
+			<div class="css_grid_item waves-effect waves-light" ng-class="{'selected': CSSGrid.selected_item == $index}" ng-click="CSSGrid.toggleItem($index);" ng-repeat="item in CSSGrid.items" ng-style="{'background-color': '#'+item.colour, 'border': '1px solid ' + '#'+item.colour, 'grid-column-start': CSSGrid.getGridItemValue(item['grid-column-start']) ,'grid-column-end': CSSGrid.getGridItemValue(item['grid-column-end']),'grid-row-start': CSSGrid.getGridItemValue(item['grid-row-start']),'grid-row-end': CSSGrid.getGridItemValue(item['grid-row-end']),'justify-self': item['justify-self'],'align-self': item['align-self']}">
+				<div class="css_grid_inner">{{$index+1}}</div>
+				<div class="remove" ng-if="CSSGrid.items.length > 1" ng-click="CSSGrid.removeItem($index)"><i class="tiny material-icons" title="Remove">remove_circle</i></div>
+			</div>
+		</div>
+
+    </main>
+ </div>
+
+<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="assets/js/script.min.js"></script>
+</body>
+</html>
